@@ -39,6 +39,30 @@ function enable_cvwe_othergrades_text_text(status)
 	document.educvpost.cvwe_grade_othercategories_text.disabled = status;
 }
 
+function enable_cvport_othersubjects_text_text(status)
+{
+	status=!status;	
+	document.educvportpost.cvport_subject_othersubjects_text.disabled = status;
+}
+
+function enable_cvport_othergrades_text_text(status)
+{
+	status=!status;	
+	document.educvportpost.cvport_grade_othercategories_text.disabled = status;
+}
+
+function ShowHideTextBox() {
+    if($("#cvport_type").val()=="edujobs:cv:portfolio:file") {
+         $("#cvport_file").show();
+         $("#cvport_link").hide();
+    }
+    else
+    {
+         $("#cvport_file").hide();
+         $("#cvport_link").show();
+    } 
+}
+
 
   $(function() {
     $( "#accordion" ).accordion();

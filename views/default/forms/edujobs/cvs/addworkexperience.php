@@ -261,28 +261,28 @@ if (!empty($cvwe_grade_othercategories) || !empty($cvwe_grade_othercategories_te
 </div>
 
 <div class="form-wide">
-	<div style='width:100%; clear:both;'>
+	<div class='form-left'>
 		<label><?php echo elgg_echo('edujobs:add:cvwe_reasons_go'); ?></label>
 		<span class='custom_fields_more_info' id='more_info_cvwe_reasons_go'></span>
 		<span class='custom_fields_more_info_text' id='text_more_info_cvwe_reasons_go'>
 			<?php echo elgg_echo('edujobs:add:cvwe_reasons_go:note'); ?>
 		</span>
 	</div>
-	<div style='width:100%; clear:both;'>
-		<?php echo elgg_view('input/longtext', array('name' => 'cvwe_reasons_go', 'value' => $cvwe_reasons_go, 'class' => 'cvwe_reasons_go')); ?>
+	<div class='form-right'>
+		<?php echo elgg_view('input/text', array('name' => 'cvwe_reasons_go', 'value' => $cvwe_reasons_go, 'class' => 'cvwe_reasons_go')); ?>
 	</div>
 </div>
 
 <div class="form-wide">
-	<div style='width:100%; clear:both;'>
+	<div class='form-left'>
 		<label><?php echo elgg_echo('edujobs:add:cvwe_comments'); ?></label>
 		<span class='custom_fields_more_info' id='more_info_cvwe_comments'></span>
 		<span class='custom_fields_more_info_text' id='text_more_info_cvwe_comments'>
 			<?php echo elgg_echo('edujobs:add:cvwe_comments:note'); ?>
 		</span>
 	</div>
-	<div style='width:100%; clear:both;'>
-		<?php echo elgg_view('input/longtext', array('name' => 'cvwe_comments', 'value' => $cvwe_comments, 'class' => 'cvwe_comments')); ?>
+	<div class='form-right'>
+		<?php echo elgg_view('input/text', array('name' => 'cvwe_comments', 'value' => $cvwe_comments, 'class' => 'cvwe_comments')); ?>
 	</div>
 </div>
 

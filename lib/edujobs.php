@@ -277,6 +277,62 @@ function cv_language_prepare_form_vars($cvlang = null) {
 	return false; 
 }
 
+//add post cv portfolio form parameters
+function cv_portfolio_prepare_form_vars($cvport = null) {
+
+	// input names => defaults
+	$values = array(
+		'cvport_title' => '',
+		'cvport_type' => '',
+		'cvport_link' => '',
+		'cvport_file' => '',
+		'cvport_subject_math' => '',
+		'cvport_subject_science' => '',
+		'cvport_subject_socialstudies' => '',
+		'cvport_subject_spanish' => '',
+		'cvport_subject_english' => '',
+		'cvport_subject_otherforeignlangs' => '',
+		'cvport_subject_technology' => '',
+		'cvport_subject_othersubjects' => '',
+		'cvport_subject_othersubjects_text' => '',
+		'cvport_grade_kindergarten' => '',
+		'cvport_grade_earlyelementary' => '',
+		'cvport_grade_lateelementary' => '',
+		'cvport_grade_middleschool' => '',
+		'cvport_grade_highschool' => '',
+		'cvport_grade_othercategories' => '',
+		'cvport_grade_othercategories_text' => '',
+		'cvport_recommend' => '',
+		'tags' => '',
+ 		
+		'access_id' => ACCESS_DEFAULT,
+		'container_guid' => elgg_get_page_owner_guid(),
+		'entity' => $cvport,
+		'guid' => null,
+	);          
+
+	if ($cvport) {
+		foreach (array_keys($values) as $field) {
+			if (isset($cvport->$field)) {
+					$values[$field] = $cvport->$field;
+			}
+		}
+	}
+
+	if (elgg_is_sticky_form('educvportpost')) {
+		$sticky_values = elgg_get_sticky_values('educvportpost');
+		foreach ($sticky_values as $key => $value) {
+			$values[$key] = $value;
+		}
+	}
+
+	elgg_clear_sticky_form('educvportpost');
+
+	return $values;
+	
+	return false; 
+}
+
 // get the profile type of current user
 function get_profile_type($user = null) {
 	// check if user belongs to Docente or Colegio profile
@@ -557,6 +613,16 @@ function get_years() {
     return $years;
 }
 
+// get list of portfolio types
+function get_portfolio_types() {
+    $portfolio_types = array(
+		'edujobs:cv:portfolio:file' => elgg_echo('edujobs:cv:portfolio:file'),
+		'edujobs:cv:portfolio:link' => elgg_echo('edujobs:cv:portfolio:link'),
+    );
+    
+    return $portfolio_types;
+}
+
 // get list of start working for search
 function get_start_working_search() {
     $start_working = array(
@@ -796,6 +862,28 @@ function get_date_of_application($job_guid = null, $user_guid = null) {
 	return 0;	
 }
 
+// get date of user application for a specific job
+function check_if_has_file($cvlang_guid = null) {
+	if ($cvlang_guid != null && is_numeric($cvlang_guid))	{
+		
+		$options = array(
+			'type' => 'object',
+			'subtype' => 'file',
+			'limit' => 0,
+			'count' => true,
+			'metadata_name_value_pairs' => array(
+				array('name' => 'cvlang_guid', 'value' => $cvlang_guid, 'operand' => '='),
+			),
+		);
+
+		$files = elgg_get_entities_from_metadata($options);
+		if ($files>0)
+			return true;
+	}
+	
+	return 0;	
+}
+
 
 // get list of countries
 function get_countries_list() {
@@ -841,7 +929,7 @@ function get_countries_list() {
 		'Canada'=>'Canada',
 		'Cape Verde'=>'Cape Verde',
 		'Cayman Islands'=>'Cayman Islands',
-		'Central African Republi'=>'Central African Republic',
+		'Central African Republic'=>'Central African Republic',
 		'Chad'=>'Chad',
 		'Chile'=>'Chile',
 		'China'=>'China',
@@ -1100,11 +1188,665 @@ function get_edujobs_currency_list() {
 }
 
 
-
-
-
-
-
-
-
-
+// get list of countries
+function get_country_flag($country = null) {
+	switch ($country) {
+		case 'Afghanistan':
+			return 'Afghanistan.png';
+			break;		
+		case 'Albania':
+			return 'Albania.png';
+			break;			
+		case 'Algeria':
+			return 'Algeria.png';
+			break;			
+		case 'American Samoa':
+			return 'American_Samoa.png';
+			break;			
+		case 'Andorra':
+			return 'Andorra.png';
+			break;			
+		case 'Angola':
+			return 'Angola.png';
+			break;			
+		case 'Anguilla':
+			return 'Anguilla.png';
+			break;			
+		case 'Antigua and Barbuda':
+			return 'Antigua_and_Barbuda.png';
+			break;			
+		case 'Argentina':
+			return 'Argentina.png';
+			break;			
+		case 'Armenia':
+			return 'Armenia.png';
+			break;			
+		case 'Aruba':
+			return 'Aruba.png';
+			break;			
+		case 'Australia':
+			return 'Australia.png';
+			break;			
+		case 'Austria':
+			return 'Austria.png';
+			break;			
+		case 'Azerbaijan':
+			return 'Azerbaijan.png';
+			break;		
+		case 'Bahamas':
+			return 'Bahamas.png';
+			break;			
+		case 'Bahrain':
+			return 'Bahrain.png';
+			break;			
+		case 'Bangladesh':
+			return 'Bangladesh.png';
+			break;			
+		case 'Barbados':
+			return 'Barbados.png';
+			break;			
+		case 'Belarus':
+			return 'Belarus.png';
+			break;			
+		case 'Belgium':
+			return 'Belgium.png';
+			break;			
+		case 'Belize':
+			return 'Belize.png';
+			break;			
+		case 'Benin':
+			return 'Benin.png';
+			break;			
+		case 'Bermuda':
+			return 'Bermuda.png';
+			break;			
+		case 'Bhutan':
+			return 'Bhutan.png';
+			break;			
+		case 'Bolivia':
+			return 'Bolivia.png';
+			break;			
+		case 'Bosnia and Herzegovina':
+			return 'Bosnia.png';
+			break;			
+		case 'Botswana':
+			return 'Botswana.png';
+			break;		
+		case 'Brazil':
+			return 'Brazil.png';
+			break;			
+		case 'Brunei Darussalam':
+			return 'Brunei.png';
+			break;			
+		case 'Bulgaria':
+			return 'Bulgaria.png';
+			break;			
+		case 'Burkina Faso':
+			return 'Burkina_Faso.png';
+			break;			
+		case 'Burundi':
+			return 'Burundi.png';
+			break;			
+		case 'Cambodia':
+			return 'Cambodia.png';
+			break;			
+		case 'Cameroon':
+			return 'Cameroon.png';
+			break;			
+		case 'Canada':
+			return 'Canada.png';
+			break;			
+		case 'Cape Verde':
+			return 'Cape_Verde.png';
+			break;			
+		case 'Cayman Islands':
+			return 'Cayman_Islands.png';
+			break;			
+		case 'Central African Republi':
+			return 'Central_African_Republic.png';
+			break;			
+		case 'Chad':
+			return 'Chad.png';
+			break;			
+		case 'Chile':
+			return 'Chile.png';
+			break;			
+		case 'China':
+			return 'China.png';
+			break;	
+		case 'Christmas Island':
+			return 'Christmas_Island.png';
+			break;			
+		case 'Colombia':
+			return 'Colombia.png';
+			break;			
+		case 'Comoros':
+			return 'Comoros.png';
+			break;			
+		case 'Congo The Democratic Republic of The':
+			return 'Democratic_Republic_of_the_Congo.png';
+			break;
+		case 'Congo':
+			return 'Republic_of_the_Congo.png';
+			break;
+		case 'Cook Islands':
+			return 'Cook_Islands.png';
+			break;		
+		case 'Costa Rica':
+			return 'Costa_Rica.png';
+			break;			
+		case 'Croatia':
+			return 'Croatia.png';
+			break;			
+		case 'Cuba':
+			return 'Cuba.png';
+			break;			
+		case 'Cyprus':
+			return 'Cyprus.png';
+			break;			
+		case 'Czech Republic':
+			return 'Czech_Republic.png';
+			break;			
+		case 'Denmark':
+			return 'Denmark.png';
+			break;			
+		case 'Djibouti':
+			return 'Djibouti.png';
+			break;			
+		case 'Dominica':
+			return 'Dominica.png';
+			break;			
+		case 'Dominican Republic':
+			return 'Dominican_Republic.png';
+			break;			
+		case 'Ecuador':
+			return 'Ecuador.png';
+			break;			
+		case 'Egypt':
+			return 'Egypt.png';
+			break;			
+		case 'El Salvador':
+			return 'El_Salvador.png';
+			break;			
+		case 'Equatorial Guinea':
+			return 'Equatorial_Guinea.png';
+			break;			
+		case 'Eritrea':
+			return 'Eritrea.png';
+			break;	
+		case 'Estonia':
+			return 'Estonia.png';
+			break;			
+		case 'Ethiopia':
+			return 'Ethiopia.png';
+			break;			
+		case 'Falkland Islands (Malvinas)':
+			return 'Falkland_Islands.png';
+			break;			
+		case 'Faroe Islands':
+			return 'Faroe_Islands.png';
+			break;			
+		case 'Fiji':
+			return 'Fiji.png';
+			break;			
+		case 'Finland':
+			return 'Finland.png';
+			break;			
+		case 'France':
+			return 'France.png';
+			break;			
+		case 'French Polynesia':
+			return 'French_Polynesia.png';
+			break;			
+		case 'Gabon':
+			return 'Gabon.png';
+			break;			
+		case 'Gambia':
+			return 'Gambia.png';
+			break;	
+		case 'Georgia':
+			return 'Georgia.png';
+			break;			
+		case 'Germany':
+			return 'Germany.png';
+			break;			
+		case 'Ghana':
+			return 'Ghana.png';
+			break;			
+		case 'Gibraltar':
+			return 'Gibraltar.png';
+			break;			
+		case 'Greece':
+			return 'Greece.png';
+			break;			
+		case 'Greenland':
+			return 'Greenland.png';
+			break;			
+		case 'Grenada':
+			return 'Grenada.png';
+			break;			
+		case 'Guam':
+			return 'Guam.png';
+			break;			
+		case 'Guatemala':
+			return 'Guatemala.png';
+			break;			
+		case 'Guinea':
+			return 'Guinea.png';
+			break;			
+		case 'Guinea-bissau':
+			return 'Guinea_Bissau.png';
+			break;			
+		case 'Guyana':
+			return 'Guyana.png';
+			break;			
+		case 'Haiti':
+			return 'Haiti.png';
+			break;			
+		case 'Holy See (Vatican City State)':
+			return 'Vatican_City.png';
+			break;			
+		case 'Honduras':
+			return 'Honduras.png';
+			break;			
+		case 'Hong Kong':
+			return 'Hong_Kong.png';
+			break;			
+		case 'Hungary':
+			return 'Hungary.png';
+			break;			
+		case 'Iceland':
+			return 'Iceland.png';
+			break;			
+		case 'India':
+			return 'India.png';
+			break;			
+		case 'Indonesia':
+			return 'Indonesia.png';
+			break;			
+		case 'Iran Islamic Republic of':
+			return 'Iran.png';
+			break;			
+		case 'Iraq':
+			return 'Iraq.png';
+			break;			
+		case 'Ireland':
+			return 'Ireland.png';
+			break;			
+		case 'Israel':
+			return 'Israel.png';
+			break;			
+		case 'Italy':
+			return 'Italy.png';
+			break;			
+		case 'Jamaica':
+			return 'Jamaica.png';
+			break;			
+		case 'Japan':
+			return 'Japan.png';
+			break;			
+		case 'Jordan':
+			return 'Jordan.png';
+			break;			
+		case 'Kazakhstan':
+			return 'Kazakhstan.png';
+			break;			
+		case 'Kenya':
+			return 'Kenya.png';
+			break;			
+		case 'Kiribati':
+			return 'Kiribati.png';
+			break;			
+		case 'Korea Democratic People\'s Republic of':
+			return 'North_Korea.png';
+			break;			
+		case 'Korea Republic of':
+			return 'South_Korea.png';
+			break;			
+		case 'Kuwait':
+			return 'Kuwait.png';
+			break;			
+		case 'Kyrgyzstan':
+			return 'Kyrgyzstan.png';
+			break;			
+		case 'Lao People\'s Democratic Republic':
+			return 'Laos.png';
+			break;			
+		case 'Latvia':
+			return 'Latvia.png';
+			break;			
+		case 'Lebanon':
+			return 'Lebanon.png';
+			break;	
+		case 'Lesotho':
+			return 'Lesotho.png';
+			break;			
+		case 'Liberia':
+			return 'Liberia.png';
+			break;			
+		case 'Libyan Arab Jamahiriya':
+			return 'Libya.png';
+			break;			
+		case 'Liechtenstein':
+			return 'Liechtenstein.png';
+			break;			
+		case 'Lithuania':
+			return 'Lithuania.png';
+			break;			
+		case 'Luxembourg':
+			return 'Luxembourg.png';
+			break;			
+		case 'Macao':
+			return 'Macao.png';
+			break;			
+		case 'Macedonia The Former Yugoslav Republic of':
+			return 'Macedonia.png';
+			break;			
+		case 'Madagascar':
+			return 'Madagascar.png';
+			break;			
+		case 'Malawi':
+			return 'Malawi.png';
+			break;			
+		case 'Malaysia':
+			return 'Malaysia.png';
+			break;			
+		case 'Maldives':
+			return 'Maldives.png';
+			break;			
+		case 'Mali':
+			return 'Mali.png';
+			break;			
+		case 'Malta':
+			return 'Malta.png';
+			break;			
+		case 'Marshall Islands':
+			return 'Marshall_Islands.png';
+			break;			
+		case 'Martinique':
+			return 'Martinique.png';
+			break;			
+		case 'Mauritania':
+			return 'Mauritania.png';
+			break;	
+		case 'Mauritius':
+			return 'Mauritius.png';
+			break;			
+		case 'Mexico':
+			return 'Mexico.png';
+			break;			
+		case 'Micronesia Federated States of':
+			return 'Micronesia.png';
+			break;			
+		case 'Moldova Republic of':
+			return 'Moldova.png';
+			break;			
+		case 'Monaco':
+			return 'Monaco.png';
+			break;			
+		case 'Mongolia':
+			return 'Mongolia.png';
+			break;			
+		case 'Montserrat':
+			return 'Montserrat.png';
+			break;			
+		case 'Morocco':
+			return 'Morocco.png';
+			break;			
+		case 'Mozambique':
+			return 'Mozambique.png';
+			break;		
+		case 'Myanmar':
+			return 'Myanmar.png';
+			break;			
+		case 'Namibia':
+			return 'Namibia.png';
+			break;			
+		case 'Nauru':
+			return 'Nauru.png';
+			break;			
+		case 'Nepal':
+			return 'Nepal.png';
+			break;			
+		case 'Netherlands':
+			return 'Netherlands.png';
+			break;			
+		case 'Netherlands Antilles':
+			return 'Netherlands_Antilles.png';
+			break;			
+		case 'New Zealand':
+			return 'New_Zealand.png';
+			break;			
+		case 'Nicaragua':
+			return 'Nicaragua.png';
+			break;			
+		case 'Niger':
+			return 'Niger.png';
+			break;			
+		case 'Nigeria':
+			return 'Nigeria.png';
+			break;	
+		case 'Niue':
+			return 'Niue.png';
+			break;			
+		case 'Norfolk Island':
+			return 'Norfolk_Island.png';
+			break;			
+		case 'Norway':
+			return 'Norway.png';
+			break;			
+		case 'Oman':
+			return 'Oman.png';
+			break;			
+		case 'Pakistan':
+			return 'Pakistan.png';
+			break;			
+		case 'Palau':
+			return 'Palau.png';
+			break;			
+		case 'Panama':
+			return 'Panama.png';
+			break;			
+		case 'Papua New Guinea':
+			return 'Papua_New_Guinea.png';
+			break;			
+		case 'Paraguay':
+			return 'Paraguay.png';
+			break;			
+		case 'Peru':
+			return 'Peru.png';
+			break;			
+		case 'Philippines':
+			return 'Philippines.png';
+			break;			
+		case 'Pitcairn':
+			return 'Pitcairn_Islands.png';
+			break;		
+		case 'Poland':
+			return 'Poland.png';
+			break;			
+		case 'Portugal':
+			return 'Portugal.png';
+			break;			
+		case 'Puerto Rico':
+			return 'Puerto_Rico.png';
+			break;			
+		case 'Qatar':
+			return 'Qatar.png';
+			break;			
+		case 'Romania':
+			return 'Romania.png';
+			break;			
+		case 'Russian Federation':
+			return 'Russian_Federation.png';
+			break;			
+		case 'Rwanda':
+			return 'Rwanda.png';
+			break;			
+		case 'Saint Kitts and Nevis':
+			return 'Saint_Kitts_and_Nevis.png';
+			break;			
+		case 'Saint Lucia':
+			return 'Saint_Lucia.png';
+			break;			
+		case 'Saint Pierre and Miquelon':
+			return 'Saint_Pierre.png';
+			break;			
+		case 'Saint Vincent and The Grenadines':
+			return 'Saint_Vicent_and_the_Grenadines.png';
+			break;			
+		case 'Samoa':
+			return 'Samoa.png';
+			break;			
+		case 'San Marino':
+			return 'San_Marino.png';
+			break;			
+		case 'Saudi Arabi':
+			return 'Saudi_Arabia.png';
+			break;			
+		case 'Senegal':
+			return 'Senegal.png';
+			break;			
+		case 'Serbia':
+			return 'Serbia_and_Montenegro.png';
+			break;	
+		case 'Seychelles':
+			return 'Seychelles.png';
+			break;			
+		case 'Sierra Leone':
+			return 'Sierra_Leone.png';
+			break;			
+		case 'Singapore':
+			return 'Singapore.png';
+			break;			
+		case 'Slovakia':
+			return 'Slovakia.png';
+			break;			
+		case 'Slovenia':
+			return 'Slovenia.png';
+			break;			
+		case 'Solomon Islands':
+			return 'Soloman_Islands.png';
+			break;			
+		case 'Somalia':
+			return 'Somalia.png';
+			break;			
+		case 'South Africa':
+			return 'South_Africa.png';
+			break;			
+		case 'South Georgia and The South Sandwich Islands':
+			return 'South_Georgia.png';
+			break;			
+		case 'Spain':
+			return 'Spain.png';
+			break;			
+		case 'Sri Lanka':
+			return 'Sri_Lanka.png';
+			break;			
+		case 'Sudan':
+			return 'Sudan.png';
+			break;			
+		case 'Suriname':
+			return 'Suriname.png';
+			break;			
+		case 'Swaziland':
+			return 'Swaziland.png';
+			break;			
+		case 'Sweden':
+			return 'Sweden.png';
+			break;		
+		case 'Switzerland':
+			return 'Switzerland.png';
+			break;			
+		case 'Syrian Arab Republic':
+			return 'Syria.png';
+			break;			
+		case 'Taiwan Province of China':
+			return 'Taiwan.png';
+			break;			
+		case 'Tajikistan':
+			return 'Tajikistan.png';
+			break;			
+		case 'Tanzania United Republic of':
+			return 'Tanzania.png';
+			break;			
+		case 'Thailand':
+			return 'Thailand.png';
+			break;			
+		case 'Timor-leste':
+			return 'Timor-Leste.png';
+			break;			
+		case 'Togo':
+			return 'Togo.png';
+			break;			
+		case 'Tonga':
+			return 'Tonga.png';
+			break;	
+		case 'Trinidad and Tobago':
+			return 'Trinidad_and_Tobago.png';
+			break;			
+		case 'Tunisia':
+			return 'Tunisia.png';
+			break;			
+		case 'Turkey':
+			return 'Turkey.png';
+			break;			
+		case 'Turkmenistan':
+			return 'Turkmenistan.png';
+			break;			
+		case 'Turks and Caicos Islands':
+			return 'Turks_and_Caicos_Islands.png';
+			break;			
+		case 'Tuvalu':
+			return 'Tuvalu.png';
+			break;			
+		case 'Uganda':
+			return 'Uganda.png';
+			break;			
+		case 'Ukraine':
+			return 'Ukraine.png';
+			break;			
+		case 'United Arab Emirates':
+			return 'UAE.png';
+			break;			
+		case 'United Kingdom':
+			return 'United_Kingdom.png';
+			break;			
+		case 'United States':
+			return 'United_States_of_America.png';
+			break;			
+		case 'Uruguay':
+			return 'Uruguay.png';
+			break;	
+		case 'Uzbekistan':
+			return 'Uzbekistan.png';
+			break;			
+		case 'Vanuatu':
+			return 'Vanuatu.png';
+			break;			
+		case 'Venezuela':
+			return 'Venezuela.png';
+			break;			
+		case 'Viet Nam':
+			return 'Vietnam.png';
+			break;			
+		case 'Virgin Islands U.S.':
+			return 'US_Virgin_Islands.png';
+			break;			
+		case 'Wallis and Futuna':
+			return 'Wallis_and_Futuna.png';
+			break;			
+		case 'Yemen':
+			return 'Yemen.png';
+			break;			
+		case 'Zambia':
+			return 'Zambia.png';
+			break;			
+		case 'Zimbabwe':			
+			return 'Zimbabwe.png';
+			break;			
+		default:
+            return false;
+    } 
+    return false;
+}

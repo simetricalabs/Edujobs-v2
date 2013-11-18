@@ -77,6 +77,26 @@ if (check_if_user_is_teacher($user))   {
 		$error_fields_missing = true;
     } 
     
+	if (!$cvwe_subject_math && !$cvwe_subject_science && !$cvwe_subject_socialstudies && !$cvwe_subject_spanish && !$cvwe_subject_english && !$cvwe_subject_otherforeignlangs && !$cvwe_subject_technology && !$cvwe_subject_othersubjects) {
+		register_error(elgg_echo('edujobs:add:missing:cv_subject'));
+		$error_fields_missing = true;
+    }  
+    
+	if ($cvwe_subject_othersubjects && !$cvwe_subject_othersubjects_text) {
+		register_error(elgg_echo('edujobs:add:missing:cv_othersubject'));
+		$error_fields_missing = true;
+    }      
+    
+	if (!$cvwe_grade_kindergarten && !$cvwe_grade_earlyelementary && !$cvwe_grade_lateelementary && !$cvwe_grade_middleschool && !$cvwe_grade_highschool && !$cvwe_grade_othercategories) {
+		register_error(elgg_echo('edujobs:add:missing:cv_grade'));
+		$error_fields_missing = true;
+    }    
+    
+	if ($cvwe_grade_othercategories && !$cvwe_grade_othercategories_text) {
+		register_error(elgg_echo('edujobs:add:missing:cv_othergrade'));
+		$error_fields_missing = true;    
+    }
+    
 	if ($error_fields_missing)	{	
 		register_error(elgg_echo('edujobs:cv:missing_fields'));
 		forward(REFERER);
@@ -128,8 +148,8 @@ if (check_if_user_is_teacher($user))   {
     $cvwe->cvwe_grade_highschool = $cvwe_grade_highschool; 
     $cvwe->cvwe_grade_othercategories = $cvwe_grade_othercategories; 
     $cvwe->cvwe_grade_othercategories_text = $cvwe_grade_othercategories_text; 
-    //$tagarray = string_to_tag_array($tags); 
-    $cvwe->tags = $tags;     
+    $tagarray = string_to_tag_array($tags); 
+    $cvwe->tags = $tagarray;     
     $cvwe->access_id = $access_id;
     
     if ($cvwe->save()) {

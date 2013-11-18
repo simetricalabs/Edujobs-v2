@@ -85,8 +85,6 @@ if (check_if_user_is_teacher($user))   {
     //$cvlang->cvlang_cert_document = $cvlang_cert_document; 
     $cvlang->access_id = $access_id;
     
-   
-    
     if ($cvlang->save()) {
 		if ($cvlang_cert_document_file) {	
 			$prefix = "cvlang-".$cvlang->guid;

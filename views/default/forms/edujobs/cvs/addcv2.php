@@ -215,15 +215,15 @@ if (!empty($cv_grade_othercategories) || !empty($cv_grade_othercategories_text))
 </div>
 
 <div class="form-wide">
-	<div style='width:100%; clear:both;'>
+	<div class='form-left'>
 		<label><?php echo elgg_echo('edujobs:add:cv_more_info'); ?></label>
 		<span class='custom_fields_more_info' id='more_info_cv_more_info'></span>
 		<span class='custom_fields_more_info_text' id='text_more_info_cv_more_info'>
 			<?php echo elgg_echo('edujobs:add:cv_more_info:note'); ?>
 		</span>
 	</div>
-	<div style='width:100%; clear:both;'>
-		<?php echo elgg_view('input/longtext', array('name' => 'cv_more_info', 'value' => $cv_more_info, 'class' => 'cv_more_info')); ?>
+	<div class='form-right'>
+		<?php echo elgg_view('input/text', array('name' => 'cv_more_info', 'value' => $cv_more_info, 'class' => 'cv_more_info')); ?>
 	</div>
 </div>
 

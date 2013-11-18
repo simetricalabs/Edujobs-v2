@@ -51,6 +51,7 @@ if ($user_guid) {
 	echo '<li class="'.$sel_cv4.'"><a class="elgg-menu-item" href="'.elgg_get_site_url().'edujobs/teachers/addcv4/'.$user_guid.'" title="">'.elgg_echo('edujobs:cv:add4:simple').'</a></li>';
 	echo '<li class="'.$sel_cv5.'"><a class="elgg-menu-item" href="'.elgg_get_site_url().'edujobs/teachers/addcv5/'.$user_guid.'" title="">'.elgg_echo('edujobs:cv:add5:simple').'</a></li>';
 	echo '<li class="'.$sel_cv6.'"><a class="elgg-menu-item" href="'.elgg_get_site_url().'edujobs/teachers/addcv6/'.$user_guid.'" title="">'.elgg_echo('edujobs:cv:add6:simple').'</a></li>';
+	echo '<li class="'.$sel_cv7.'"><a class="elgg-menu-item" href="'.elgg_get_site_url().'edujobs/teachers/addcv7/'.$user_guid.'" title="">'.elgg_echo('edujobs:cv:add7:simple').'</a></li>';
 	echo '</ul>';
 	echo '</div>';
 	echo '</div>';

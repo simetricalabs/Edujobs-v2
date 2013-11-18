@@ -5,7 +5,7 @@
  */
  
 $curl = elgg_extract('curl', $vars, 'edujobs/teachers/view');
-$cv_birth_country = elgg_extract('cv_birth_country', $vars,  DEFAULT_COUNTRY);
+$cv_birth_country = elgg_extract('cv_birth_country', $vars,  0);
 $cv_birth_city = elgg_extract('cv_birth_city', $vars,  '');
 $cv_grade_kindergarten = elgg_extract('cv_grade_kindergarten', $vars,  '');
 $cv_grade_earlyelementary = elgg_extract('cv_grade_earlyelementary', $vars,  '');
@@ -32,6 +32,8 @@ $tags = elgg_extract('tags', $vars,  '');
 
 // get lists
 $countrieslist = get_countries_list();
+array_unshift($countrieslist, elgg_echo('edujobs:search:allcountries'));
+
 $yearslist = get_years();
 $start_working = get_start_working_search();
 $work_desired = get_work_desired_search();
@@ -65,14 +67,14 @@ $work_desired = get_work_desired_search();
 <div class="form-wide">
 	<label><?php echo elgg_echo('edujobs:add:cv_availability_date'); ?></label>
 	<div class='form-right'>
-		<?php echo elgg_view('input/dropdown', array('name' => 'cv_availability_date', 'value' => $cv_availability_date, 'options_values' => $start_working)); ?> 
+		<?php echo elgg_view('input/dropdown', array('name' => 'cv_availability_date', 'value' => $cv_availability_date, 'options_values' => $start_working, 'onchange' => 'this.form.submit()')); ?> 
 	</div>
 </div>
 
 <div class="form-wide">
 	<label><?php echo elgg_echo('edujobs:add:cv_desired_work_type'); ?></label>
 	<div class='form-right'>
-		<?php echo elgg_view('input/dropdown', array('name' => 'cv_desired_work_type', 'value' => $cv_desired_work_type, 'options_values' => $work_desired)); ?> 
+		<?php echo elgg_view('input/dropdown', array('name' => 'cv_desired_work_type', 'value' => $cv_desired_work_type, 'options_values' => $work_desired, 'onchange' => 'this.form.submit()')); ?> 
 	</div>
 </div>
 

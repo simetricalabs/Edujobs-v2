@@ -64,8 +64,8 @@ if ($user->guid == $cvedu->owner_guid)	{
 	$content .= elgg_view('output/url', array(
 		'href' => elgg_get_site_url().'action/edujobs/job/delete?guid='.$cvedu->guid,
 		'text' => elgg_echo('edujobs:cv:we:delete'),
-		'class' => 'elgg-button elgg-button-submit',
-		'title' => elgg_echo('edujobs:delete:confirm'),
+		'class' => 'elgg-button elgg-button-submit elgg-requires-confirmation',
+		'rel' => elgg_echo('edujobs:delete:confirm'),
 		'is_action' => true
 	));		
 }

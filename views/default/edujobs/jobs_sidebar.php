@@ -5,7 +5,7 @@
  */
  
 $curl = elgg_extract('curl', $vars, 'edujobs/jobs');
-$country = elgg_extract('country', $vars,  DEFAULT_COUNTRY);
+$country = elgg_extract('country', $vars, 0);
 $city = elgg_extract('city', $vars,  '');
 $grade_kindergarten = elgg_extract('grade_kindergarten', $vars,  '');
 $grade_earlyelementary = elgg_extract('grade_earlyelementary', $vars,  '');
@@ -27,6 +27,7 @@ $tags = elgg_extract('tags', $vars,  '');
 
 // get countries list
 $countrieslist = get_countries_list();
+array_unshift($countrieslist, elgg_echo('edujobs:search:allcountries'));
 
 ?>
 

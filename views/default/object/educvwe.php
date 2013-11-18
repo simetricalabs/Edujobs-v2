@@ -100,8 +100,8 @@ if ($user->guid == $mycvwe->owner_guid)	{
 	$content .= elgg_view('output/url', array(
 		'href' => elgg_get_site_url().'action/edujobs/job/delete?guid='.$mycvwe->guid,
 		'text' => elgg_echo('edujobs:cv:we:delete'),
-		'class' => 'elgg-button elgg-button-submit',
-		'title' => elgg_echo('edujobs:delete:confirm'),
+		'class' => 'elgg-button elgg-button-submit elgg-requires-confirmation',
+		'rel' => elgg_echo('edujobs:delete:confirm'),
 		'is_action' => true
 	));		
 }
@@ -128,7 +128,7 @@ if ($mycvwe->cvwe_period_to || $mycvwe->cvwe_period_now) {
 if ($location) $content .= $location;
 $content .= '</div>';
 if ($mycvwe->tags)	{
-	$content .= '<div class="job-footer">'.elgg_echo('edujobs:add:tags').': '.$mycvwe->tags.'</div>';
+	$content .= '<div class="job-footer">'.elgg_echo('edujobs:add:tags').': '.implode(", ", $mycvwe->tags).'</div>';
 }
 	
 if ($full) {

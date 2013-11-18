@@ -182,16 +182,9 @@ if (get_input("searchformsubmitted"))	{
 	if ($tags) {
 		$tags_frm = array('name' => 'tags','value' => $tags, 'operand' => ' like ');
 		array_push($search_options,$tags_frm);
-		//$options['wheres'] = 'city LIKE \'%'.$tags.'%\'';
 		$sidebar_options[tags] = $tags;
 	}
-/*	
-	if ($tags) {
-		$xxx_frm = array('name' => 'title','value' => '%'.$tags.'%', 'operand' => 'LIKE');
-		array_push($search_options,$xxx_frm);
-		//$options['wheres'] = 'n_table.title LIKE \'%'.$tags.'%\'';
-	}		
-*/
+
 //http://community.elgg.org/discussion/view/207083/no-way-to-retrieve-an-entity-based-on-type-subtype-and-title
 //http://community.elgg.org/discussion/view/837400/doing-a-like-query-in-elgg-get-entities-from-metadata
 //http://docs.elgg.org/wiki/DatabaseSchema
@@ -249,39 +242,40 @@ switch ($page[0]) {
 				$title = elgg_echo('edujobs:label:mycv');
 				$sortby = '';	// we don't want sort selector on this selection at the moment
 				if (check_if_user_has_cv($user))	{
-					//get user experience
-					$content_we = elgg_list_entities_from_metadata(array(
-						'type' => 'object',
-						'subtype' => 'educvwe',
-						'limit' => 0,
+					$options_special = array(
+						'type' => 'object', 
+						'limit' => 0, 
 						'full_view' => false,
 						'count' => false,
 						'pagination' => false,
 						'owner_guid' => $user->guid,
-					));	
+					);
+					
+					//get user experience
+					$options_special[subtype] = 'educvwe';
+					$options_special[order_by_metadata] = array(
+						array( 'name' => 'cvwe_period_now', 'direction' => 'DESC', 'as' => 'integer' ),
+						array( 'name' => 'cvwe_period_to', 'direction' => 'DESC'),
+					);
+					$content_we = elgg_list_entities_from_metadata($options_special);
 					
 					//get user education
-					$content_edu = elgg_list_entities_from_metadata(array(
-						'type' => 'object',
-						'subtype' => 'educvedu',
-						'limit' => 0,
-						'full_view' => false,
-						'count' => false,
-						'pagination' => false,
-						'owner_guid' => $user->guid,
-					));	
+					$options_special[subtype] = 'educvedu';
+					$options_special[order_by_metadata] = array(
+						array( 'name' => 'cvedu_time_currently', 'direction' => 'DESC', 'as' => 'integer' ),
+						array( 'name' => 'cvedu_time_to', 'direction' => 'DESC'),
+					);	
+					$content_edu = elgg_list_entities_from_metadata($options_special);	
 					
 					//get user language
-					$content_lang = elgg_list_entities_from_metadata(array(
-						'type' => 'object',
-						'subtype' => 'educvlang',
-						'limit' => 0,
-						'full_view' => false,
-						'count' => false,
-						'pagination' => false,
-						'owner_guid' => $user->guid,
-					));	
-									
+					$options_special[subtype] = 'educvlang';
+					$options_special[order_by_metadata] = array();	
+					$content_lang = elgg_list_entities_from_metadata($options_special);		
+					
+					//get user portfolio
+					$options_special[subtype] = 'educvport';
+					$content_port = elgg_list_entities_from_metadata($options_special);		
+							
 					$content = elgg_list_entities_from_metadata(array(
 						'type' => 'object',
 						'subtype' => 'educv',
@@ -293,6 +287,7 @@ switch ($page[0]) {
 						'content_we' => $content_we,
 						'content_edu' => $content_edu,
 						'content_lang' => $content_lang,
+						'content_port' => $content_port,
 					));						
 				} 
 				else {
@@ -301,9 +296,114 @@ switch ($page[0]) {
 				
 				break;
 			case 'jobsmaylike':
-				$sortby = '';	// we don't want sort selector on this selection at the moment
-				$emptymessage = elgg_echo('edujobs:teachers:jobsmaylike:empty');
-				break;				
+				//$sortby = '';	// we don't want sort selector on this selection at the moment
+				//$emptymessage = elgg_echo('edujobs:teachers:jobsmaylike:empty');
+				$getmycv = elgg_get_entities_from_metadata(array(
+					'type' => 'object',
+					'subtype' => 'educv',
+					'limit' => 1,
+					'full_view' => false,
+					'count' => false,
+					'pagination' => false,
+					'owner_guid' => $user->guid,
+				));	
+
+if ($getmycv[0]->cv_birth_country) {
+	$country_frm = array('name' => 'country','value' => $getmycv[0]->cv_birth_country, 'operand' => '=');
+	array_push($search_options,$country_frm);
+}
+if ($getmycv[0]->cv_birth_city) {
+	$city_frm = array('name' => 'city','value' => $getmycv[0]->cv_birth_city, 'operand' => '=');
+	array_push($search_options,$city_frm);
+}
+
+if ($getmycv[0]->tags) {
+	$tags_frm = array('name' => 'tags','value' => $getmycv[0]->tags, 'operand' => ' like ');
+	array_push($search_options,$tags_frm);
+	$sidebar_options[tags] = $tags;
+}
+
+$cv_grade_joins = '';
+$cv_grade_wheres = '';
+
+if ($getmycv[0]->cv_grade_kindergarten) {
+	$cv_grade_joins .= ' JOIN elgg_metadata n_grade1 on e.guid = n_grade1.entity_guid JOIN elgg_metastrings msgraden1 on n_grade1.name_id = msgraden1.id JOIN elgg_metastrings msgradev1 on n_grade1.value_id = msgradev1.id ';
+	$cv_grade_wheres .= '(msgraden1.string = \'grade_kindergarten\' AND BINARY msgradev1.string IN (1) AND ( n_grade1.enabled=\'yes\')) OR ';
+}
+if ($getmycv[0]->cv_grade_earlyelementary) {
+	$cv_grade_joins .= ' JOIN elgg_metadata n_grade2 on e.guid = n_grade2.entity_guid JOIN elgg_metastrings msgraden2 on n_grade2.name_id = msgraden2.id JOIN elgg_metastrings msgradev2 on n_grade2.value_id = msgradev2.id ';
+	$cv_grade_wheres .= '(msgraden2.string = \'grade_earlyelementary\' AND BINARY msgradev2.string IN (1) AND ( n_grade2.enabled=\'yes\')) OR ';
+}	
+if ($getmycv[0]->cv_grade_lateelementary) {
+	$cv_grade_joins .= ' JOIN elgg_metadata n_grade3 on e.guid = n_grade3.entity_guid JOIN elgg_metastrings msgraden3 on n_grade3.name_id = msgraden3.id JOIN elgg_metastrings msgradev3 on n_grade3.value_id = msgradev3.id ';
+	$cv_grade_wheres .= '(msgraden3.string = \'grade_lateelementary\' AND BINARY msgradev3.string IN (1) AND ( n_grade3.enabled=\'yes\')) OR ';
+}	
+if ($getmycv[0]->cv_grade_middleschool) {
+	$cv_grade_joins .= ' JOIN elgg_metadata n_grade4 on e.guid = n_grade4.entity_guid JOIN elgg_metastrings msgraden4 on n_grade4.name_id = msgraden4.id JOIN elgg_metastrings msgradev4 on n_grade4.value_id = msgradev4.id ';
+	$cv_grade_wheres .= '(msgraden4.string = \'grade_middleschool\' AND BINARY msgradev4.string IN (1) AND ( n_grade4.enabled=\'yes\')) OR ';
+}	
+if ($getmycv[0]->cv_grade_highschool) {
+	$cv_grade_joins .= ' JOIN elgg_metadata n_grade5 on e.guid = n_grade5.entity_guid JOIN elgg_metastrings msgraden5 on n_grade5.name_id = msgraden5.id JOIN elgg_metastrings msgradev5 on n_grade5.value_id = msgradev5.id ';
+	$cv_grade_wheres .= '(msgraden5.string = \'grade_highschool\' AND BINARY msgradev5.string IN (1) AND ( n_grade5.enabled=\'yes\')) OR ';
+}
+if ($cv_grade_wheres)  {
+	$cv_grade_wheres = '( '.substr_replace($cv_grade_wheres ,"",-3).' )';
+}		
+
+$cv_subject_joins = '';
+$cv_subject_wheres = '';
+if ($getmycv[0]->cv_subject_math) {
+	$cv_subject_joins .= ' JOIN elgg_metadata n_subj1 on e.guid = n_subj1.entity_guid JOIN elgg_metastrings mssubjn1 on n_subj1.name_id = mssubjn1.id JOIN elgg_metastrings mssubjv1 on n_subj1.value_id = mssubjv1.id ';
+	$cv_subject_wheres .= '(mssubjn1.string = \'subject_math\' AND BINARY mssubjv1.string IN (1) AND ( n_subj1.enabled=\'yes\')) OR ';
+}
+if ($getmycv[0]->cv_subject_science) {
+	$cv_subject_joins .= ' JOIN elgg_metadata n_subj2 on e.guid = n_subj2.entity_guid JOIN elgg_metastrings mssubjn2 on n_subj2.name_id = mssubjn2.id JOIN elgg_metastrings mssubjv2 on n_subj2.value_id = mssubjv2.id ';
+	$cv_subject_wheres .= '(mssubjn2.string = \'subject_science\' AND BINARY mssubjv2.string IN (1) AND ( n_subj2.enabled=\'yes\')) OR ';
+}
+if ($getmycv[0]->cv_subject_socialstudies) {
+	$cv_subject_joins .= ' JOIN elgg_metadata n_subj3 on e.guid = n_subj3.entity_guid JOIN elgg_metastrings mssubjn3 on n_subj3.name_id = mssubjn3.id JOIN elgg_metastrings mssubjv3 on n_subj3.value_id = mssubjv3.id ';
+	$cv_subject_wheres .= '(mssubjn3.string = \'subject_socialstudies\' AND BINARY mssubjv3.string IN (1) AND ( n_subj3.enabled=\'yes\')) OR ';
+}	
+if ($getmycv[0]->cv_subject_spanish) {
+	$cv_subject_joins .= ' JOIN elgg_metadata n_subj4 on e.guid = n_subj4.entity_guid JOIN elgg_metastrings mssubjn4 on n_subj4.name_id = mssubjn4.id JOIN elgg_metastrings mssubjv4 on n_subj4.value_id = mssubjv4.id ';
+	$cv_subject_wheres .= '(mssubjn4.string = \'subject_spanish\' AND BINARY mssubjv4.string IN (1) AND ( n_subj4.enabled=\'yes\')) OR ';
+}	
+if ($getmycv[0]->cv_subject_english) {
+
+	$cv_subject_joins .= ' JOIN elgg_metadata n_subj5 on e.guid = n_subj5.entity_guid JOIN elgg_metastrings mssubjn5 on n_subj5.name_id = mssubjn5.id JOIN elgg_metastrings mssubjv5 on n_subj5.value_id = mssubjv5.id ';
+	$cv_subject_wheres .= '(mssubjn5.string = \'subject_english\' AND BINARY mssubjv5.string IN (1) AND ( n_subj5.enabled=\'yes\')) OR ';
+}	
+if ($getmycv[0]->cv_subject_otherforeignlangs) {
+	$cv_subject_joins .= ' JOIN elgg_metadata n_subj6 on e.guid = n_subj6.entity_guid JOIN elgg_metastrings mssubjn6 on n_subj6.name_id = mssubjn6.id JOIN elgg_metastrings mssubjv6 on n_subj6.value_id = mssubjv6.id ';
+	$cv_subject_wheres .= '(mssubjn6.string = \'subject_otherforeignlangs\' AND BINARY mssubjv6.string IN (1) AND ( n_subj6.enabled=\'yes\')) OR ';
+}	
+if ($getmycv[0]->cv_subject_technology) {
+	$cv_subject_joins .= ' JOIN elgg_metadata n_subj7 on e.guid = n_subj7.entity_guid JOIN elgg_metastrings mssubjn7 on n_subj7.name_id = mssubjn7.id JOIN elgg_metastrings mssubjv7 on n_subj7.value_id = mssubjv7.id ';
+	$cv_subject_wheres .= '(mssubjn7.string = \'subject_technology\' AND BINARY mssubjv7.string IN (1) AND ( n_subj7.enabled=\'yes\')) OR ';
+}
+if ($cv_subject_wheres)  {
+	$cv_subject_wheres = '( '.substr_replace($cv_subject_wheres ,"",-3).' )';
+}	
+
+if (($cv_subject_joins && $cv_subject_wheres) || ($cv_grade_joins && $cv_grade_wheres))  {
+	
+	$options['joins'] = $cv_subject_joins.' '.$cv_grade_joins;
+	
+	if ($cv_subject_wheres && $cv_grade_wheres)	$options['wheres'] = ' ('.$cv_subject_wheres.') AND ('.$cv_grade_wheres.') ';
+	else if ($cv_subject_wheres)	$options['wheres'] = ' ('.$cv_subject_wheres.') ';
+	else if ($cv_grade_wheres)	$options['wheres'] = ' ('.$cv_grade_wheres.') ';
+}				
+				elgg_push_breadcrumb(elgg_echo('edujobs:label:jobsmaylike'));
+				$sortby = get_sort_by_selector($current_url[0], $orderby);
+				$title = elgg_echo('edujobs:label:jobsmaylike');
+				$sidebar_options[curl] = 'edujobs/jobs';
+				//$sidebar = elgg_view('edujobs/jobs_sidebar', $sidebar_options);
+				$subject_published_until_final = array('name' => 'published_until_final','value' => time(), 'operand' => '>=');
+				array_push($search_options,$subject_published_until_final);
+				$options['metadata_name_value_pairs'] = $search_options;
+				$options['metadata_name_value_pairs_operator'] = 'AND';
+				$content = elgg_list_entities_from_metadata_edujobs($options, 'elgg_view_entity_list',$orderby);
+				break;
 		}
 		break;
 	case 'schools':

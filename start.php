@@ -77,11 +77,11 @@ function edujobs_init() {
 	elgg_register_action("edujobs/job/setrejected", "$action_path/setrejected.php");
 	elgg_register_action("edujobs/cvs/addcv1", "$action_path/goaddcv1.php");  
 	elgg_register_action("edujobs/cvs/addcv2", "$action_path/goaddcv2.php");  
-	//elgg_register_action("edujobs/cv/delete", "$action_path/delcv.php"); 
 	elgg_register_action("edujobs/cvs/addworkexperience", "$action_path/goaddworkexperience.php");  
 	elgg_register_action("edujobs/cvs/addeducation", "$action_path/goaddeducation.php");  
 	elgg_register_action("edujobs/cvs/addlanguage", "$action_path/goaddlanguage.php");  
 	elgg_register_action("edujobs/cvs/addcv6", "$action_path/goaddcv6.php");
+	elgg_register_action("edujobs/cvs/addportfolio", "$action_path/goaddportfolio.php");
 }
 
 /**
@@ -196,6 +196,23 @@ function edujobs_page_handler($page) {
 					}				
 					require_once "$base/teachers/addcv6.php";
 					break;
+				case 'download':
+					if(!empty($page[2])) {
+						set_input('uguid', $page[2]);
+					}				
+					require_once "$base/teachers/download.php";
+					break;	
+				case 'addcv7':
+					if(!empty($page[2])) {
+						set_input('uguid', $page[2]);
+					}				
+					require_once "$base/teachers/addcv7.php";
+					break;
+				case 'addportfolio':
+					if(!empty($page[2])) {	set_input('uguid', $page[2]);	}
+					if(!empty($page[3])) {	set_input('guid', $page[3]);	}
+					require_once "$base/teachers/addportfolio.php";
+					break;						
 				default:
 					include "$base/main.php";
 					return false;						

@@ -48,7 +48,17 @@ $content .= '<div style="width:20%; float:left;">'.$cvlang->cvlang_language.'</d
 $content .=  elgg_echo($cvlang->cvlang_level) . ' | ';
 if ($cvlang->cvlang_cert_institute) $content .= $cvlang->cvlang_cert_institute . ' | ';
 if ($cvlang->cvlang_total_score) {
-	$content .= elgg_echo('edujobs:cv:lang:score'). ' ' . $cvlang->cvlang_total_score ;
+	$content .= elgg_echo('edujobs:cv:lang:score'). ' ' . $cvlang->cvlang_total_score . ' | ';
+}
+
+if (check_if_has_file($cvlang->guid))	{
+	$content .= ''.elgg_view('output/url', array(
+		'name' => 'download_cert',
+		'text' => elgg_echo('edujobs:cv:download:file'),
+		'href' => 'edujobs/teachers/download/'.$cvlang->guid,
+		'link_class' => 'elgg-button elgg-button-action',
+		'target' => '_blank',
+	)).'';
 }
 else   {
 	$content = substr_replace($content ,"",-3);
@@ -71,8 +81,9 @@ if ($user->guid == $cvlang->owner_guid)	{
 	$content .= elgg_view('output/url', array(
 		'href' => elgg_get_site_url().'action/edujobs/job/delete?guid='.$cvlang->guid,
 		'text' => elgg_echo('edujobs:cv:we:delete'),
-		'class' => 'elgg-button elgg-button-submit',
-		'title' => elgg_echo('edujobs:delete:confirm'),
+		'class' => 'elgg-button elgg-button-submit elgg-requires-confirmation',
+		'class' => 'elgg-button elgg-button-submit elgg-requires-confirmation',
+		'rel' => elgg_echo('edujobs:delete:confirm'),
 		'is_action' => true
 	));		
 }

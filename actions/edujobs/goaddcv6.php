@@ -35,8 +35,8 @@ if (check_if_user_is_teacher($user))   {
     } else {
         register_error(elgg_echo('edujobs:cv:add:failed'));
     }   
-    //forward('edujobs/teachers/addcv3/'.$user->guid); 
-    forward('edujobs/teachers/mycv'); 
+    
+    forward('edujobs/teachers/addcv7/'.$user->guid); 
 }
 else    {  
     register_error(elgg_echo('edujobs:cv:noaccessforpost'));  

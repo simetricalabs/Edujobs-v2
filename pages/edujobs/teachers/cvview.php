@@ -24,38 +24,39 @@ $sidebar = '';
 $title = elgg_echo('edujobs:cv', array($owner->name));
 
 if (check_if_user_has_cv($owner))	{
-	//get user experience
-	$content_we = elgg_list_entities_from_metadata(array(
-		'type' => 'object',
-		'subtype' => 'educvwe',
-		'limit' => 0,
+	$options_special = array(
+		'type' => 'object', 
+		'limit' => 0, 
 		'full_view' => false,
 		'count' => false,
 		'pagination' => false,
 		'owner_guid' => $owner->guid,
-	));
+	);
+	
+	//get user experience
+	$options_special[subtype] = 'educvwe';
+	$options_special[order_by_metadata] = array(
+		array( 'name' => 'cvwe_period_now', 'direction' => 'DESC', 'as' => 'integer' ),
+		array( 'name' => 'cvwe_period_to', 'direction' => 'DESC'),
+	);
+	$content_we = elgg_list_entities_from_metadata($options_special);
 	
 	//get user education
-	$content_edu = elgg_list_entities_from_metadata(array(
-		'type' => 'object',
-		'subtype' => 'educvedu',
-		'limit' => 0,
-		'full_view' => false,
-		'count' => false,
-		'pagination' => false,
-		'owner_guid' => $owner->guid,
-	));	
+	$options_special[subtype] = 'educvedu';
+	$options_special[order_by_metadata] = array(
+		array( 'name' => 'cvedu_time_currently', 'direction' => 'DESC', 'as' => 'integer' ),
+		array( 'name' => 'cvedu_time_to', 'direction' => 'DESC'),
+	);	
+	$content_edu = elgg_list_entities_from_metadata($options_special);	
 	
 	//get user language
-	$content_lang = elgg_list_entities_from_metadata(array(
-		'type' => 'object',
-		'subtype' => 'educvlang',
-		'limit' => 0,
-		'full_view' => false,
-		'count' => false,
-		'pagination' => false,
-		'owner_guid' => $owner->guid,
-	));		
+	$options_special[subtype] = 'educvlang';
+	$options_special[order_by_metadata] = array();	
+	$content_lang = elgg_list_entities_from_metadata($options_special);		
+	
+	//get user portfolio
+	$options_special[subtype] = 'educvport';
+	$content_port = elgg_list_entities_from_metadata($options_special);			
 		
 	$content = elgg_list_entities_from_metadata(array(
 		'type' => 'object',
@@ -68,6 +69,7 @@ if (check_if_user_has_cv($owner))	{
 		'content_we' => $content_we,
 		'content_edu' => $content_edu,
 		'content_lang' => $content_lang,
+		'content_port' => $content_port,
 	));	
 }
 

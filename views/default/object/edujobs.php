@@ -70,9 +70,13 @@ if ($jobs->grade_highschool) { $grade .= elgg_echo('edujobs:add:grade:highschool
 if ($jobs->grade_othercategories && $jobs->grade_othercategories_text) { $grade .= $jobs->grade_othercategories_text . ', ';}
 $grade = substr_replace($grade ,"",-2);
 
+//get flag
+$flag = get_country_flag($jobs->country);
+
 $location = '';
 if ($jobs->city) $location .= $jobs->city;
 if ($jobs->country) $location .= ', ' . $jobs->country;
+if ($flag) $location .= '&nbsp;<img src="'.elgg_get_site_url().'mod/edujobs/assets/flags/'.$flag.'" width="20" height="12" alt="'.$jobs->country.'" />';
 
 /// build content //
 $content = '';

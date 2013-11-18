@@ -21,15 +21,21 @@ if (check_if_user_is_teacher($user) && $user->guid==$uguid) {
     elgg_push_breadcrumb(elgg_echo('edujobs:cv:add4:simple'));
 
 	if (check_if_user_has_cv($user))	{
-		$content = elgg_list_entities_from_metadata(array(
-			'type' => 'object',
-			'subtype' => 'educvedu',
-			'limit' => 0,
+		$options_special = array(
+			'type' => 'object', 
+			'limit' => 0, 
 			'full_view' => false,
 			'count' => false,
 			'pagination' => false,
 			'owner_guid' => $user->guid,
-		));					
+		);
+		$options_special[subtype] = 'educvedu';
+		$options_special[order_by_metadata] = array(
+			array( 'name' => 'cvedu_time_currently', 'direction' => 'DESC', 'as' => 'integer' ),
+			array( 'name' => 'cvedu_time_to', 'direction' => 'DESC'),
+		);	
+		$content = elgg_list_entities_from_metadata($options_special);
+		
 	}	
 	
 	if (!$content) {

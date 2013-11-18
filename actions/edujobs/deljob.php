@@ -58,6 +58,15 @@ else if ((elgg_instanceof($job, 'object', 'educvlang')) && $job->canEdit()) {
         forward("edujobs/teachers/addcv5/".$container->guid);
     }
 }
+else if ((elgg_instanceof($job, 'object', 'educvport')) && $job->canEdit()) {
+    $container = $job->getContainerEntity();
+
+    if ($job->delete()) {
+        system_message(elgg_echo("edujobs:delete:cvport:success"));
+        forward("edujobs/teachers/addcv7/".$container->guid);
+    }
+}
+
 
 register_error(elgg_echo("edujobs:delete:job:failed"));
 forward(REFERER);

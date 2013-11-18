@@ -11,4 +11,5 @@ function edujobs_run_once_subtypes()	{
     add_subtype('object', Educvwe::SUBTYPE, "educvwe");
     add_subtype('object', Educvedu::SUBTYPE, "educvedu");
     add_subtype('object', Educvlang::SUBTYPE, "educvlang");
+    add_subtype('object', Educvport::SUBTYPE, "educvport");
 }

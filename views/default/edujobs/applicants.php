@@ -22,7 +22,10 @@ if ($applies)	{
 			'count' => false,
 			'pagination' => false,
 			'owner_guid' => $ap->user_guid,
-		));			
+		));	
+		
+		//get flag
+		$flag = get_country_flag($daskalos[0]->cv_birth_country);		
 		
 		$cv_url = elgg_view('output/url', array(
 			'href' => 'edujobs/teachers/cv/'.$applicant->username,
@@ -68,6 +71,7 @@ if ($applies)	{
 		echo '<p>'.$daskalos[0]->cv_position_looking_for.'</p>';
 		echo '<p>'.$daskalos[0]->cv_description.'</p>';
 		echo '<p>';
+		if ($flag) echo '<img src="'.elgg_get_site_url().'mod/edujobs/assets/flags/'.$flag.'" width="20" height="12" alt="'.$daskalos[0]->cv_birth_country.'" />&nbsp;';
 		echo $daskalos[0]->cv_birth_country.' | '.$daskalos[0]->cv_birth_city.' | '.elgg_echo('edujobs:add:cv_salary_min_acceptable').': '.$daskalos[0]->cv_salary_min_acceptable.' '.$daskalos[0]->cv_salary_currency.elgg_echo('edujobs:cv:currency:per').elgg_echo($daskalos[0]->cv_salary_unit_of_time);
 		echo '</p>';
 		
